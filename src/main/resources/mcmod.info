@@ -1,0 +1,17 @@
+[
+{
+  "modid": "thaumicrecipe",
+  "name": "Thaumic Recipe Tweaker",
+  "description": "A mod that allows you to change the recieps of Thaumcraft and its addons",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Nukeminecart"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": [],
+  "requiredMods": ["thaumcraft"]
+}
+]

@@ -21,7 +21,8 @@ public class ThaumicRecipeTweaker
     @EventHandler
     public void init(FMLInitializationEvent event) {
         JFrame frame = new JFrame("test");
-        frame.setBounds(100,100,100,100);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.setVisible(true);
     }
 }

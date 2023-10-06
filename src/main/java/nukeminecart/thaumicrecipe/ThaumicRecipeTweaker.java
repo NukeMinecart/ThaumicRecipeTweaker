@@ -22,7 +22,7 @@ public class ThaumicRecipeTweaker
     public void init(FMLInitializationEvent event) {
         JFrame frame = new JFrame("test");
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         frame.setVisible(true);
     }
 }

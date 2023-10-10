@@ -1,4 +1,4 @@
 package nukeminecart.thaumicrecipe.ui.recipe;
 
-public class AlchemyUI {
+public class RecipeEditor {
 }

@@ -4,6 +4,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import nukeminecart.thaumicrecipe.ui.HomeUI;
 
 import javax.swing.*;
 
@@ -20,9 +21,6 @@ public class ThaumicRecipeTweaker
 
     @EventHandler
     public void init(FMLInitializationEvent event) {
-        JFrame frame = new JFrame("test");
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        frame.setVisible(true);
+        new HomeUI();
     }
 }

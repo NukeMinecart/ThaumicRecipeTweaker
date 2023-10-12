@@ -1,6 +1,5 @@
 package nukeminecart.thaumicrecipe;
 
-import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -14,8 +13,6 @@ public class ThaumicRecipeTweaker
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-        Launch.classLoader.addTransformerExclusion("com.sun.javafx.");
-        Launch.classLoader.addTransformerExclusion("javafx.");
 
     }
 

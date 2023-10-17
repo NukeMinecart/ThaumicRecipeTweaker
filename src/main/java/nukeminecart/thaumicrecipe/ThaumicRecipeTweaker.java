@@ -5,10 +5,14 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
+import java.net.URL;
+
 @Mod(modid = ThaumicRecipeTweaker.MODID, useMetadata = true)
 public class ThaumicRecipeTweaker
 {
     public static final String MODID = "thaumicrecipe";
+    public static final String GUIID = "ThaumicRecipeTweakerGUI";
+    public static final String VERSION = "1.0.0";
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
@@ -18,7 +22,8 @@ public class ThaumicRecipeTweaker
 
     @EventHandler
     public void init(FMLInitializationEvent event) {
-        String separator = System.getProperty("file.separator");
-        new JarExecutor().executeJar(System.getProperty("user.dir")+separator+"mods"+separator+"ThaumicRecipeTweakerGUI.jar");
+        URL directoryURL = DirectoryLocator.getLocation(ThaumicRecipeTweaker.class);
+        String directory = DirectoryLocator.urlToFile(directoryURL).getPath().replace("ThaumicRecipeTweaker-"+VERSION+".jar","");
+        new JarExecutor().executeJar((directory+ThaumicRecipeTweaker.GUIID+".jar"),"variable");
     }
 }

@@ -13,7 +13,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.0'
+version = '1.0.0'
 group = 'nukeminecart.thaumicrecipe' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'thaumicrecipe'
 
@@ -55,7 +55,6 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2859'
     compile 'curse.maven:thaumcraft-223628:2629023'
     compile 'curse.maven:baubles-227083:2518667'
-    compile 'curse.maven:javafxlib-409320:3062603'
 
 }
 

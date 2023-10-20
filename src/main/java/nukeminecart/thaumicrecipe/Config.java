@@ -1,33 +1,30 @@
 package nukeminecart.thaumicrecipe;
 
-import net.minecraftforge.common.config.Configuration;
-import nukeminecart.thaumicrecipe.proxy.ServerProxy;
+import net.minecraftforge.common.config.ConfigManager;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+@net.minecraftforge.common.config.Config(modid = ThaumicRecipeTweaker.MODID)
 public class Config {
 
-    private static final String CATEGORY_GENERAL = "general";
-    // This values below you can access elsewhere in your mod:
-    public static String currentlyLoadedRecipe = "";
+    @net.minecraftforge.common.config.Config.Comment({"Change this to change the recipe being loaded","All recipes must be stored in the thaumic recipe folder"})
+    @net.minecraftforge.common.config.Config.RequiresMcRestart()
+    public static String loadedRecipeFile = "null";
+    @Mod.EventBusSubscriber(modid = ThaumicRecipeTweaker.MODID)
+    private static class EventHandler {
 
-    // Call this from CommonProxy.preInit(). It will create our config if it doesn't
-    // exist yet and read the values if it does exist.
-    public static void readConfig() {
-        Configuration cfg = ServerProxy.config;
-        try {
-            cfg.load();
-            initGeneralConfig(cfg);
-        } catch (Exception ignored) {
-        } finally {
-            if (cfg.hasChanged()) {
-                cfg.save();
+        /**
+         * Inject the new values and save to the config file when the config has been changed from the GUI.
+         *
+         * @param event The event
+         */
+        @SubscribeEvent
+        public static void onConfigChanged(final ConfigChangedEvent.OnConfigChangedEvent event) {
+            if (event.getModID().equals(ThaumicRecipeTweaker.MODID)) {
+                ConfigManager.sync(ThaumicRecipeTweaker.MODID, net.minecraftforge.common.config.Config.Type.INSTANCE);
             }
         }
     }
-
-    private static void initGeneralConfig(Configuration cfg) {
-        cfg.addCustomCategoryComment(CATEGORY_GENERAL, "General configuration");
-        currentlyLoadedRecipe = cfg.get(CATEGORY_GENERAL,"LoadedRecipe","none").getString();
-
-    }
-
 }
+

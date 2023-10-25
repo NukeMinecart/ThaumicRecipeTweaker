@@ -12,7 +12,12 @@ public class JarExecutor {
     private BufferedReader error;
     private BufferedReader op;
     private int exitVal;
-
+    /**
+     * Runs the given jar file
+     * @param jarFilePath The Jar file to run.
+     * @param args the arguments to pass to the jar file
+     * @throws NullPointerException if jar file was not found or there was another error
+     */
     public void executeJar(String jarFilePath,String... args) throws NullPointerException {
         // Create run arguments for the
 

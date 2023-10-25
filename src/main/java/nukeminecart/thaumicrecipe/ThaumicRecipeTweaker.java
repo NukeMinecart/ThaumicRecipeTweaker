@@ -23,8 +23,10 @@ public class ThaumicRecipeTweaker
 
     @EventHandler
     public void init(FMLInitializationEvent event) {
-        URL directoryURL = DirectoryLocator.getLocation(ThaumicRecipeTweaker.class);
-        String directory = DirectoryLocator.urlToFile(directoryURL).getPath().replace("ThaumicRecipeTweaker-"+VERSION+".jar","");
-        new JarExecutor().executeJar((directory+ThaumicRecipeTweaker.GUIID+".jar"),Config.shouldGUIOpen.toString(), Minecraft.getMinecraft().mcDataDir.getPath(), Config.loadedRecipeFile);
+        if(Config.shouldGUIOpen) {
+            URL directoryURL = DirectoryLocator.getLocation(ThaumicRecipeTweaker.class);
+            String directory = DirectoryLocator.urlToFile(directoryURL).getPath().replace("ThaumicRecipeTweaker-" + VERSION + ".jar", "");
+            new JarExecutor().executeJar((directory + ThaumicRecipeTweaker.GUIID + ".jar"), Minecraft.getMinecraft().mcDataDir.getPath(), Config.loadedRecipeFile);
+        }
     }
 }

@@ -3,8 +3,7 @@ package nukeminecart.thaumicrecipe;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 
 import java.net.URL;
 
@@ -16,13 +15,7 @@ public class ThaumicRecipeTweaker
     public static final String VERSION = "1.0.0";
 
     @EventHandler
-    public void preInit(FMLPreInitializationEvent event)
-    {
-
-    }
-
-    @EventHandler
-    public void init(FMLInitializationEvent event) {
+    public void postInit(FMLPostInitializationEvent event) {
         if(Config.shouldGUIOpen) {
             URL directoryURL = DirectoryLocator.getLocation(ThaumicRecipeTweaker.class);
             String directory = DirectoryLocator.urlToFile(directoryURL).getPath().replace("ThaumicRecipeTweaker-" + VERSION + ".jar", "");

@@ -1,4 +1,4 @@
-package nukeminecart.thaumicrecipe;
+package nukeminecart.thaumicrecipe.gui.launcher;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,13 +12,15 @@ public class JarExecutor {
     private BufferedReader error;
     private BufferedReader op;
     private int exitVal;
+
     /**
      * Runs the given jar file
+     *
      * @param jarFilePath The Jar file to run.
-     * @param args the arguments to pass to the jar file
+     * @param args        the arguments to pass to the jar file
      * @throws NullPointerException if jar file was not found or there was another error
      */
-    public void executeJar(String jarFilePath,String... args) throws NullPointerException {
+    public void executeJar(String jarFilePath, String... args) throws NullPointerException {
         // Create run arguments for the
 
         String javaloc = System.getProperty("java.home");
@@ -39,7 +41,7 @@ public class JarExecutor {
             command.waitFor();
             this.exitVal = command.exitValue();
             if (this.exitVal != 0) {
-                throw new IOException("Failed to execure jar, " + this.getExecutionLog()+"->"+jarFilePath);
+                throw new IOException("Failed to execure jar, " + this.getExecutionLog() + "->" + jarFilePath);
             }
 
         } catch (final IOException | InterruptedException e) {
@@ -52,14 +54,14 @@ public class JarExecutor {
         StringBuilder error = new StringBuilder();
         String line;
         try {
-            while((line = this.error.readLine()) != null) {
+            while ((line = this.error.readLine()) != null) {
                 error.append("\n").append(line);
             }
         } catch (final IOException ignored) {
         }
         StringBuilder output = new StringBuilder();
         try {
-            while((line = this.op.readLine()) != null) {
+            while ((line = this.op.readLine()) != null) {
                 output.append("\n").append(line);
             }
         } catch (final IOException ignored) {

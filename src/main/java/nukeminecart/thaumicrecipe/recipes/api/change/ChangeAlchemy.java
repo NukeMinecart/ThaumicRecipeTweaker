@@ -1,4 +1,4 @@
-package nukeminecart.thaumicrecipe.recipes;
+package nukeminecart.thaumicrecipe.recipes.api.change;
 
 import net.minecraft.util.ResourceLocation;
 import thaumcraft.api.ThaumcraftApi;
@@ -7,12 +7,12 @@ import thaumcraft.api.crafting.CrucibleRecipe;
 import thaumcraft.api.crafting.IThaumcraftRecipe;
 
 public class ChangeAlchemy {
-    public static void changeAlchemyRecipe(ResourceLocation location, Object catalyst, AspectList aspects){
+    public static void changeAlchemyRecipe(ResourceLocation location, Object catalyst, AspectList aspects) {
         CrucibleRecipe alchemyRecipe;
         IThaumcraftRecipe testRecipe = ThaumcraftApi.getCraftingRecipes().get(location);
-        if(testRecipe instanceof CrucibleRecipe) {
+        if (testRecipe instanceof CrucibleRecipe) {
             alchemyRecipe = (CrucibleRecipe) testRecipe;
-        }else{
+        } else {
             throw new IllegalArgumentException("Invalid Location");
         }
         ThaumcraftApi.addCrucibleRecipe(location, new CrucibleRecipe(

@@ -1,4 +1,4 @@
-package nukeminecart.thaumicrecipe.recipes;
+package nukeminecart.thaumicrecipe.recipes.api.change;
 
 import net.minecraft.util.ResourceLocation;
 import nukeminecart.thaumicrecipe.recipes.api.InfusionRecipeComplex;
@@ -8,12 +8,12 @@ import thaumcraft.api.crafting.IThaumcraftRecipe;
 import thaumcraft.api.crafting.InfusionRecipe;
 
 public class ChangeInfusion {
-    public static void changeInfusionRecipe(ResourceLocation location, int instability, Object input, AspectList aspects, Object[] recipe){
+    public static void changeInfusionRecipe(ResourceLocation location, int instability, Object input, AspectList aspects, Object[] recipe) {
         InfusionRecipe infusionRecipe;
         IThaumcraftRecipe testRecipe = ThaumcraftApi.getCraftingRecipes().get(location);
-        if(testRecipe instanceof InfusionRecipe) {
+        if (testRecipe instanceof InfusionRecipe) {
             infusionRecipe = (InfusionRecipe) testRecipe;
-        }else{
+        } else {
             throw new IllegalArgumentException("Invalid Location");
         }
         ThaumcraftApi.addInfusionCraftingRecipe(location, new InfusionRecipe(
@@ -25,28 +25,31 @@ public class ChangeInfusion {
                 recipe));
 
     }
-    public static void changeInfusionRecipe(ResourceLocation location, InfusionRecipe recipe){
+
+    public static void changeInfusionRecipe(ResourceLocation location, InfusionRecipe recipe) {
         ThaumcraftApi.addInfusionCraftingRecipe(location, recipe);
 
     }
-    public static void changeFakeInfusionRecipe(ResourceLocation location, InfusionRecipe recipe){
+
+    public static void changeFakeInfusionRecipe(ResourceLocation location, InfusionRecipe recipe) {
         ThaumcraftApi.addFakeCraftingRecipe(location, recipe);
     }
-    public static void changeComplexInfusionRecipe(ResourceLocation location, int instability, Object input, AspectList aspects,Object[] recipe){
+
+    public static void changeComplexInfusionRecipe(ResourceLocation location, int instability, Object input, AspectList aspects, Object[] recipe) {
         InfusionRecipe infusionRecipe;
         IThaumcraftRecipe testRecipe = ThaumcraftApi.getCraftingRecipes().get(location);
-        if(testRecipe instanceof InfusionRecipe) {
+        if (testRecipe instanceof InfusionRecipe) {
             infusionRecipe = (InfusionRecipe) testRecipe;
-        }else{
+        } else {
             throw new IllegalArgumentException("Invalid Location");
         }
         ThaumcraftApi.addInfusionCraftingRecipe(location, new InfusionRecipeComplex(
-                    infusionRecipe.getResearch(),
-                    infusionRecipe.getRecipeOutput(),
-                    instability,
-                    aspects,
-                    input,
-                    recipe));
+                infusionRecipe.getResearch(),
+                infusionRecipe.getRecipeOutput(),
+                instability,
+                aspects,
+                input,
+                recipe));
 
     }
 }

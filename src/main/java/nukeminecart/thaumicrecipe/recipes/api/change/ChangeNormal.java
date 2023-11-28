@@ -1,4 +1,4 @@
-package nukeminecart.thaumicrecipe.recipes;
+package nukeminecart.thaumicrecipe.recipes.api.change;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -11,18 +11,21 @@ import net.minecraftforge.registries.GameData;
 
 public class ChangeNormal {
 
-    public static void changeShapedNormalRecipe(ResourceLocation location, ResourceLocation group, ItemStack output,Object... recipe){
+    public static void changeShapedNormalRecipe(ResourceLocation location, ResourceLocation group, ItemStack output, Object... recipe) {
         GameRegistry.addShapedRecipe(location, group, output, recipe);
     }
-    public static void changeShapelessNormalRecipe(ResourceLocation location, ResourceLocation group, ItemStack output, Ingredient... recipe){
+
+    public static void changeShapelessNormalRecipe(ResourceLocation location, ResourceLocation group, ItemStack output, Ingredient... recipe) {
         GameRegistry.addShapelessRecipe(location, group, output, recipe);
     }
-    public static void changeShapedOreNormalRecipe(ResourceLocation location, ResourceLocation group, ItemStack output, Object... recipe){
+
+    public static void changeShapedOreNormalRecipe(ResourceLocation location, ResourceLocation group, ItemStack output, Object... recipe) {
         IRecipe rec = new ShapedOreRecipe(group, output, recipe);
         rec.setRegistryName(location);
         GameData.register_impl(rec);
     }
-    public static void changeShapelessOreNormalRecipe(ResourceLocation location, ResourceLocation group, ItemStack output, Ingredient... recipe){
+
+    public static void changeShapelessOreNormalRecipe(ResourceLocation location, ResourceLocation group, ItemStack output, Ingredient... recipe) {
         IRecipe rec = new ShapelessOreRecipe(group, output, (Object[]) recipe);
         rec.setRegistryName(location);
         GameData.register_impl(rec);

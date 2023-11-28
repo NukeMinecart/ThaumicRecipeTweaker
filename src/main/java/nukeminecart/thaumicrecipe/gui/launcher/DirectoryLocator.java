@@ -1,4 +1,4 @@
-package nukeminecart.thaumicrecipe;
+package nukeminecart.thaumicrecipe.gui.launcher;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,11 +15,9 @@ public class DirectoryLocator {
             final URL codeSourceLocation =
                     c.getProtectionDomain().getCodeSource().getLocation();
             if (codeSourceLocation != null) return codeSourceLocation;
-        }
-        catch (final SecurityException e) {
+        } catch (final SecurityException e) {
             // NB: Cannot access protection domain.
-        }
-        catch (final NullPointerException e) {
+        } catch (final NullPointerException e) {
             // NB: Protection domain or code source is null.
         }
 
@@ -44,8 +42,7 @@ public class DirectoryLocator {
 
         try {
             return new URL(path);
-        }
-        catch (final MalformedURLException e) {
+        } catch (final MalformedURLException e) {
             return null;
         }
     }
@@ -84,8 +81,7 @@ public class DirectoryLocator {
                 path = "file:/" + path.substring(5);
             }
             return new File(new URL(path).toURI());
-        }
-        catch (final MalformedURLException | URISyntaxException e) {
+        } catch (final MalformedURLException | URISyntaxException e) {
             // NB: URL is not completely well-formed.
         }
         if (path.startsWith("file:")) {

@@ -6,8 +6,10 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import nukeminecart.thaumicrecipe.recipes.file.Recipe;
+import nukeminecart.thaumicrecipe.recipes.file.RecipeParser;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.crafting.CrucibleRecipe;
 import thaumcraft.api.crafting.InfusionRecipe;
@@ -43,7 +45,6 @@ public class ListRetriever {
     private static void getItemList() {
         for (Item item : ForgeRegistries.ITEMS) {
             itemList.put(item.getUnlocalizedName(), item);
-
         }
     }
 
@@ -76,7 +77,7 @@ public class ListRetriever {
         for (IRecipe recipe : ForgeRegistries.RECIPES) {
             irecipeList.put(recipe.getRecipeOutput().getDisplayName(), recipe);
         }
-
+        parseIRecipes();
     }
 
     /**
@@ -116,7 +117,9 @@ public class ListRetriever {
                     break;
 
             }
-            recipeList.put(returnRecipe.getName(), returnRecipe);
+            if (returnRecipe != null) {
+                recipeList.put(returnRecipe.getName(), returnRecipe);
+            }
         }
     }
 
@@ -132,19 +135,27 @@ public class ListRetriever {
         String research = recipe.getResearch();
         String modid = Objects.requireNonNull(recipe.getRegistryName()).getResourceDomain();
         String input = "";
-        List<String> ingredients = new ArrayList<>();
+        HashMap<String, Integer> ingredients = new HashMap<>();
         for (Ingredient ingredient : recipe.getIngredients()) {
-            ingredients.add(ingredient.getMatchingStacks()[0].getItem().getUnlocalizedName());
+            ingredients.put(ingredient.getMatchingStacks()[0].getItem().getUnlocalizedName(), 1);
         }
         String output = recipe.getRecipeOutput().getDisplayName();
 
-        List<String> aspects = new ArrayList<>();
+        CraftingHelper.ShapedPrimer shapedPrimer = new CraftingHelper.ShapedPrimer();
+        shapedPrimer.height = recipe.getRecipeHeight();
+        shapedPrimer.width = recipe.getRecipeWidth();
+        shapedPrimer.input = recipe.getIngredients();
+        Object[] shape = RecipeParser.unparseShaped(shapedPrimer);
+        String[] parsedShape = RecipeParser.convertShapedToRecipe(shape);
+
+        HashMap<String, Integer> aspects = new HashMap<>();
         for (Aspect aspect : recipe.getCrystals().getAspects()) {
-            aspects.add(aspect.getName());
+            aspects.put(aspect.getName(), recipe.getCrystals().getAmount(aspect));
         }
         int vis = recipe.getVis();
-        //TODO Finish shape and add counts to the aspects in the GUI
-        return new Recipe(name, type, research, modid, input, ingredients.toArray(new String[0]), output, vis, aspects.toArray(new String[0]));
+        //TODO Finish shape and check if i parse the hashmap in the recipe list correctly
+        throw new NullPointerException(Arrays.toString(parsedShape));
+        //return new Recipe(name, type, research, modid, input, ingredients, output, vis, aspects);
     }
 
     /**
@@ -154,7 +165,7 @@ public class ListRetriever {
      * @return the {@link Recipe}
      */
     private static Recipe convertShapelessArcane(ShapelessArcaneRecipe recipe) {
-
+        return null;
     }
 
     /**
@@ -164,7 +175,7 @@ public class ListRetriever {
      * @return the {@link Recipe}
      */
     private static Recipe convertCrucible(CrucibleRecipe recipe) {
-
+        return null;
     }
 
     /**
@@ -174,7 +185,7 @@ public class ListRetriever {
      * @return the {@link Recipe}
      */
     private static Recipe convertInfusion(InfusionRecipe recipe) {
-
+        return null;
     }
 
     /**
@@ -184,6 +195,7 @@ public class ListRetriever {
      * @return the {@link Recipe}
      */
     private static Recipe convertShaped(ShapedRecipes recipe) {
+        return null;
     }
 
     /**
@@ -193,6 +205,6 @@ public class ListRetriever {
      * @return hte {@link Recipe}
      */
     private static Recipe convertShapeless(ShapelessRecipes recipe) {
-
+        return null;
     }
 }

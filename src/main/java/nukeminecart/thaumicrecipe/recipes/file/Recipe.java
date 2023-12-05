@@ -1,6 +1,7 @@
 package nukeminecart.thaumicrecipe.recipes.file;
 
-import java.util.List;
+import java.util.HashMap;
+
 
 /**
  * A type used in ThaumicRecipeTweakerGUI that contains information about a specific recipe
@@ -8,7 +9,8 @@ import java.util.List;
 public class Recipe {
 
     private String name, input, output, type, research, modid;
-    private String[] ingredients, aspects, shape;
+    private HashMap<String, Integer> ingredients, aspects;
+    private String[] shape;
     private int vis;
 
     /**
@@ -24,7 +26,7 @@ public class Recipe {
      * @param aspects     a list of aspects
      * @param shape       a {@link String} containing the shape
      */
-    public Recipe(String name, String type, String research, String modid, String input, String[] ingredients, String output, int vis, String[] aspects, String... shape) {
+    public Recipe(String name, String type, String research, String modid, String input, HashMap<String, Integer> ingredients, String output, int vis, HashMap<String, Integer> aspects, String... shape) {
         this.name = name;
         this.type = type;
         this.research = research;
@@ -36,6 +38,7 @@ public class Recipe {
         this.aspects = aspects;
         this.shape = shape;
     }
+
 
     /**
      * Copies the current {@link Recipe}
@@ -121,9 +124,9 @@ public class Recipe {
     /**
      * Gets the ingredients of a recipe
      *
-     * @return the ingredients as a {@link List<String>}
+     * @return the ingredients as a {@link HashMap<>}
      */
-    public String[] getIngredients() {
+    public HashMap<String, Integer> getIngredients() {
         return this.ingredients;
     }
 
@@ -132,7 +135,7 @@ public class Recipe {
      *
      * @param ingredients the ingredients as a varargs {@link String}
      */
-    public void setIngredients(String... ingredients) {
+    public void setIngredients(HashMap<String, Integer> ingredients) {
         this.ingredients = ingredients;
     }
 
@@ -175,18 +178,18 @@ public class Recipe {
     /**
      * Gets the aspects of a recipe
      *
-     * @return the aspects as a {@link List<String>}
+     * @return the aspects as a {@link HashMap}
      */
-    public String[] getAspects() {
+    public HashMap<String, Integer> getAspects() {
         return this.aspects;
     }
 
     /**
      * Sets the aspects of a recipe
      *
-     * @param aspects the aspects as a varargs {@link String}
+     * @param aspects the aspects as a {@link HashMap}
      */
-    public void setAspects(String... aspects) {
+    public void setAspects(HashMap<String, Integer> aspects) {
         this.aspects = aspects;
     }
 

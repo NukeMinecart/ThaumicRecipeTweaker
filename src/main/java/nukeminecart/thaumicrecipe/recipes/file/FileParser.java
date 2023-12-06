@@ -3,6 +3,7 @@ package nukeminecart.thaumicrecipe.recipes.file;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -14,16 +15,6 @@ import static nukeminecart.thaumicrecipe.ThaumicRecipeConstants.*;
 public class FileParser {
 
     //TODO CHANGE THIS TO CHECK IF THE FILES NEED TO BE UPDATED -> ADD ALL the MODID STRINGS AT THE BEGINNING
-
-    /**
-     * Locates a file from the thaumicrecipe folder and returns the corresponding {@link File}
-     *
-     * @param name the name of the recipe file
-     * @return a file with the
-     */
-    public static File getFolderFile(String name) {
-        return new File(recipeDirectory + name);
-    }
 
     /**
      * Reads {@link File} and returns the lines as a list of strings
@@ -42,34 +33,6 @@ public class FileParser {
 
         reader.close();
         return lines;
-    }
-
-    /**
-     * Parses a {@link List} file
-     *
-     * @param file the file to parse to a list
-     * @return a {@link HashMap} of the file contents separated
-     */
-    public static HashMap<String, String> parseList(File file) throws IOException {
-        HashMap<String, String> list = new HashMap<>();
-        List<String> lines = readFile(file);
-        for (String line : lines) {
-            String[] splitLine = line.split(stringArraySeparator);
-            if (splitLine.length == 2) {
-                list.put(splitLine[0], splitLine[1]);
-            }
-        }
-        return list;
-    }
-
-    /**
-     * Returns if a {@link File} exists
-     *
-     * @param file the file to check
-     * @return if the file exists
-     */
-    public static boolean checkExists(File file) {
-        return file.exists() && file.isFile();
     }
 
     /**
@@ -140,7 +103,7 @@ public class FileParser {
                 aspects.put(aspect.split(mapSeparator)[0], Integer.parseInt(aspect.split(mapSeparator)[1]));
             }
             shape = compressedRecipe[9].split(stringArraySeparator);
-        } catch (ArrayIndexOutOfBoundsException exception) {
+        } catch (ArrayIndexOutOfBoundsException ignored) {
         }
         return new Recipe(name, type, research, modid, input, ingredients, output, vis, aspects, shape);
     }
@@ -166,7 +129,7 @@ public class FileParser {
      * @param contents the contents of the file
      * @throws IOException if the file cannot be written to, doesn't exist, and if an i/o error occurs
      */
-    public static void saveToFile(File savefile, List<String> contents) throws IOException {
+    public static void saveToFile(File savefile, Collection<String> contents) throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter(savefile));
 
         for (String line : contents) {
@@ -184,39 +147,11 @@ public class FileParser {
      * @param saveLocation the location to save the {@link Recipe} {@link File}
      * @throws IOException if an i/o error occurs
      */
-    public static void saveRecipesToFile(File saveLocation, List<Recipe> recipes) throws IOException {
+    public static void saveRecipesToFile(File saveLocation, Collection<Recipe> recipes) throws IOException {
         List<String> compressedRecipes = new ArrayList<>();
         for (Recipe recipe : recipes) {
             compressedRecipes.add(compressRecipe(recipe));
         }
         saveToFile(saveLocation, compressedRecipes);
-    }
-
-    /**
-     * Sets the current ThaumicRecipeTweakerGUI config file to the selected options
-     *
-     * @param activeRecipe set the active recipe
-     * @param openGUI      if the GUI should open the next time the game launches
-     * @throws IOException if the file cannot be written to, read, doesn't exist, and if an i/o error occurs
-     */
-    public static void setConfigOptions(String activeRecipe, boolean openGUI) throws IOException {
-        File configFile = new File(recipeDirectory, "recipe.cfg");
-        List<String> contents = new ArrayList<>();
-        if (checkExists(configFile)) {
-            contents = readFile(configFile);
-        } else {
-            if (!configFile.createNewFile()) {
-                return;
-            }
-        }
-        if (contents.isEmpty()) {
-            contents.add(activeRecipe.isEmpty() ? null : ("active-recipe:" + activeRecipe));
-        } else {
-            String currentActiveRecipe = contents.get(0).replace("active-recipe:", "");
-            contents.clear();
-            contents.add("active-recipe:" + (activeRecipe.isEmpty() ? currentActiveRecipe : activeRecipe));
-        }
-        contents.add("open-gui:" + openGUI);
-        saveToFile(configFile, contents);
     }
 }

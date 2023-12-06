@@ -1,9 +1,12 @@
 package nukeminecart.thaumicrecipe.gui.lists;
 
+import nukeminecart.thaumicrecipe.recipes.file.FileParser;
+
 import java.io.File;
 import java.io.IOException;
 
 import static nukeminecart.thaumicrecipe.ThaumicRecipeConstants.recipeDirectory;
+import static nukeminecart.thaumicrecipe.gui.lists.ListRetriever.*;
 
 public class ListUpdater {
     private static File ingredientsFile;
@@ -15,13 +18,13 @@ public class ListUpdater {
     /**
      * Update all the lst {@link File} in the thaumicrecioe directory
      */
-    public static void updateListFiles() {
-        try {
-            createListFiles();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
+    public static void updateListFiles() throws IOException {
+        getListsFromRegistries();
+        createListFiles();
+        FileParser.saveRecipesToFile(recipesFile, recipeList.values());
+        FileParser.saveToFile(ingredientsFile, itemList.keySet());
+        FileParser.saveToFile(aspectsFile, aspectList.keySet());
+        FileParser.saveToFile(researchFile, researchList.keySet());
     }
 
     /**

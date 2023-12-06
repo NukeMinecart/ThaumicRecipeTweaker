@@ -22,8 +22,10 @@ public class RecipeParser {
         HashMap<Ingredient, String> ingredientMap = new HashMap<>();
 
         for (Ingredient ingredient : shapedPrimer.input) {
-            ingredientMap.put(ingredient, ingredient.getMatchingStacks()[0].getDisplayName().replace(" ", "").toLowerCase() + stringArraySeparator);
-            reverseIngredientMap.put(ingredient.getMatchingStacks()[0].getDisplayName().replace(" ", "").toLowerCase(), ingredient);
+            if (ingredient.getMatchingStacks().length > 0) {
+                ingredientMap.put(ingredient, ingredient.getMatchingStacks()[0].getDisplayName().replace(" ", "").toLowerCase() + stringArraySeparator);
+                reverseIngredientMap.put(ingredient.getMatchingStacks()[0].getDisplayName().replace(" ", "").toLowerCase(), ingredient);
+            }
         }
 
         // Add mirrored flag

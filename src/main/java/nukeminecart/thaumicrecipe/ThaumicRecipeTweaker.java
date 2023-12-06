@@ -6,8 +6,9 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import nukeminecart.thaumicrecipe.gui.launcher.DirectoryLocator;
 import nukeminecart.thaumicrecipe.gui.launcher.JarExecutor;
-import nukeminecart.thaumicrecipe.gui.lists.ListRetriever;
+import nukeminecart.thaumicrecipe.gui.lists.ListUpdater;
 
+import java.io.IOException;
 import java.net.URL;
 
 import static nukeminecart.thaumicrecipe.ThaumicRecipeConstants.minecraftDirectory;
@@ -25,12 +26,16 @@ public class ThaumicRecipeTweaker {
      */
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
+        try {
+            ListUpdater.updateListFiles();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         if (Config.shouldGUIOpen) {
             URL directoryURL = DirectoryLocator.getLocation(ThaumicRecipeTweaker.class);
             String directory = DirectoryLocator.urlToFile(directoryURL).getPath().replace("ThaumicRecipeTweaker-" + VERSION + ".jar", "");
             new JarExecutor().executeJar((directory + ThaumicRecipeTweaker.GUIID + ".jar"), minecraftDirectory.getPath(), Config.loadedRecipeFile);
         }
-        ListRetriever.getListsFromRegistries();
     }
 
     /**

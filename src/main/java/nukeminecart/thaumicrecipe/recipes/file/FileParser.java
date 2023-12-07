@@ -131,7 +131,6 @@ public class FileParser {
      */
     public static void saveToFile(File savefile, Collection<String> contents) throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter(savefile));
-
         for (String line : contents) {
             writer.write(line);
             writer.newLine();

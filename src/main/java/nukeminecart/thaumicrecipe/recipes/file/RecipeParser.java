@@ -59,12 +59,14 @@ public class RecipeParser {
 
     public static String[] convertShapedToRecipe(Object... objectShape) {
         StringBuilder builder = new StringBuilder();
-
+        //TODO REMOVE NULL VALUES
         for (int i = 0; i < objectShape.length; i++) {
             if (objectShape[i + 1].toString().toLowerCase().contains("ingredient")) {
                 break;
             }
-            builder.append(objectShape[i].equals(true) ? "" : objectShape[i]);
+            if(objectShape[i] != null)
+                builder.append(objectShape[i].equals(true) ? "" : objectShape[i]);
+            else builder.append(stringArraySeparator);
         }
         List<String> returnShape = new ArrayList<>();
         for (String item : builder.toString().split(stringArraySeparator)) {

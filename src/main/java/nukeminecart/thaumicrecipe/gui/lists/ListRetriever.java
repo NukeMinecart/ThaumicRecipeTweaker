@@ -29,6 +29,8 @@ import thaumcraft.api.research.ResearchEntry;
 
 import java.util.*;
 
+import static nukeminecart.thaumicrecipe.ThaumicRecipeConstants.MOD_ID;
+
 public class ListRetriever {
     public static HashMap<String, Item> itemList = new HashMap<>();
     public static HashMap<String, ResearchEntry> researchList = new HashMap<>();
@@ -134,9 +136,9 @@ public class ListRetriever {
                 case "ShapelessOre":
                     returnRecipe = convertShapelessOre((ShapelessOreRecipe) irecipe);
                     break;
-
             }
-            recipeList.put(returnRecipe.getName(), returnRecipe);
+            if(returnRecipe != null)
+                recipeList.put(returnRecipe.getName(), returnRecipe);
         }
     }
 
@@ -213,23 +215,26 @@ public class ListRetriever {
     private static Recipe convertInfusion(InfusionRecipe recipe) {
         String type = "infusion";
         String research = recipe.getResearch();
-        // TODO FIX THIS WITH NULL VALUES -> THE RESEARCH IS Infusion Enchantments -> doesn't like multiple inputs and outputs -> try to fix
-        String input = recipe.getRecipeInput().getMatchingStacks().length == 0 ? null : getNameFromItemStack(ThaumcraftApiHelper.getIngredient(recipe.getRecipeInput()).getMatchingStacks()[0]);
+        String input = null;
+        if (recipe.getRecipeInput().getMatchingStacks().length > 0) input = recipe.getRecipeInput().getMatchingStacks()[0].isEmpty() ? null : getNameFromItemStack(ThaumcraftApiHelper.getIngredient(recipe.getRecipeInput()).getMatchingStacks()[0]);
         HashMap<String, Integer> ingredients = compileIngredients(recipe.getComponents());
         Ingredient outputTest = ThaumcraftApiHelper.getIngredient(recipe.getRecipeOutput());
         String output;
         String name;
         String modid;
         if (outputTest != null) {
-            output = getNameFromItemStack(outputTest.getMatchingStacks()[0]);
-            name = outputTest.getMatchingStacks()[0].getDisplayName();
-            modid = getModid(outputTest.getMatchingStacks()[0]);
+            if(outputTest.getMatchingStacks().length > 0) {
+                output = getNameFromItemStack(outputTest.getMatchingStacks()[0]);
+                name = outputTest.getMatchingStacks()[0].getDisplayName();
+                modid = getModid(outputTest.getMatchingStacks()[0]);
+            }else{
+                return null;
+            }
         }else{
             output = null;
-            name = input;
-            modid = getModid(recipe.getRecipeInput());
+            name = ingredients.keySet().toArray(new String[0])[0];
+            modid = MOD_ID;
         }
-
         HashMap<String, Integer> aspects = compileAspects(recipe.getAspects());
 
         return new Recipe(name, type, research, modid, input, ingredients, output, 0, aspects);

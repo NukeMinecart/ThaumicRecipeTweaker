@@ -97,6 +97,7 @@ public class ListRetriever {
      * Parses all the {@link IRecipe} into {@link Recipe}
      */
     private static void parseIRecipes() {
+        //TODO CHANGE THE GET INGREDIENTS TO GET THE CORRECT ONES
         for (Object irecipe : irecipeList.values()) {
             String type;
             if (irecipe instanceof ShapedArcaneRecipe) type = "ShapedArcane";
@@ -387,6 +388,11 @@ public class ListRetriever {
         return RecipeParser.convertShapedToRecipe(shape);
     }
 
+    /**
+     * Compile the aspects of a {@link Recipe}
+     * @param aspects the {@link AspectList} to compile
+     * @return a {@link HashMap} containing the aspects and amounts
+     */
     private static HashMap<String, Integer> compileAspects(AspectList aspects) {
         HashMap<String, Integer> compiledAspects = new HashMap<>();
         if (aspects != null) {

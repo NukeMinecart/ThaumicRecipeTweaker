@@ -21,7 +21,7 @@ public class JarExecutor {
      * @throws NullPointerException if jar file was not found or there was another error
      */
     public void executeJar(String jarFilePath, String... args) throws NullPointerException {
-        // Create run arguments for the
+        // Create run arguments for the process builder
 
         String javaloc = System.getProperty("java.home");
         String separator = System.getProperty("file.separator");

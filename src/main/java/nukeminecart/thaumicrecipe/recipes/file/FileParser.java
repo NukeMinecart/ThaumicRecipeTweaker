@@ -127,11 +127,15 @@ public class FileParser {
      *
      * @param savefile the file to save to
      * @param contents the contents of the file
+     * @param recipe if the saving is a recipe
      * @throws IOException if the file cannot be written to, doesn't exist, and if an i/o error occurs
      */
-    public static void saveToFile(File savefile, Collection<String> contents) throws IOException {
+    public static void saveToFile(File savefile, Collection<String> contents, boolean recipe) throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter(savefile));
-        for (String line : contents) {
+        for (int i = 0; i < contents.size(); i++) {
+            String line = contents.toArray(new String[0])[i];
+            if(!recipe)
+                line = line.replace(mapSeparator," ").replace(stringSeparator, " ").replace(stringArraySeparator, " ");
             writer.write(line);
             writer.newLine();
         }
@@ -146,11 +150,11 @@ public class FileParser {
      * @param saveLocation the location to save the {@link Recipe} {@link File}
      * @throws IOException if an i/o error occurs
      */
-    public static void saveRecipesToFile(File saveLocation, Collection<Recipe> recipes) throws IOException {
+    public static void saveRecipesToFile(File saveLocation, HashMap<String, Recipe> recipes) throws IOException {
         List<String> compressedRecipes = new ArrayList<>();
-        for (Recipe recipe : recipes) {
+        for (Recipe recipe : recipes.values()) {
             compressedRecipes.add(compressRecipe(recipe));
         }
-        saveToFile(saveLocation, compressedRecipes);
+        saveToFile(saveLocation, compressedRecipes, true);
     }
 }

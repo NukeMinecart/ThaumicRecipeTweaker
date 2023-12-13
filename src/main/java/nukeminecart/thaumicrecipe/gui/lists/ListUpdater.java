@@ -21,10 +21,10 @@ public class ListUpdater {
     public static void updateListFiles() throws IOException {
         getListsFromRegistries();
         createListFiles();
-        FileParser.saveRecipesToFile(recipesFile, recipeList.values());
-        FileParser.saveToFile(ingredientsFile, itemList.keySet());
-        FileParser.saveToFile(aspectsFile, aspectList.keySet());
-        FileParser.saveToFile(researchFile, researchList.keySet());
+        FileParser.saveRecipesToFile(recipesFile, recipeList);
+        FileParser.saveToFile(ingredientsFile, itemList.keySet(), false);
+        FileParser.saveToFile(aspectsFile, aspectList.keySet(), false);
+        FileParser.saveToFile(researchFile, researchList.keySet(), false);
     }
 
     /**

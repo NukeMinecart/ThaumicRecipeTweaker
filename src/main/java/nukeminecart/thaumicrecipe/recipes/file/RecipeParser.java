@@ -23,8 +23,8 @@ public class RecipeParser {
 
         for (Ingredient ingredient : shapedPrimer.input) {
             if (ingredient.getMatchingStacks().length > 0) {
-                ingredientMap.put(ingredient, ingredient.getMatchingStacks()[0].getDisplayName().replace(" ", "").toLowerCase() + stringArraySeparator);
-                reverseIngredientMap.put(ingredient.getMatchingStacks()[0].getDisplayName().replace(" ", "").toLowerCase(), ingredient);
+                ingredientMap.put(ingredient, ingredient.getMatchingStacks()[0] + stringArraySeparator);
+                reverseIngredientMap.put(ingredient.getMatchingStacks()[0].getDisplayName(), ingredient);
             }
         }
 

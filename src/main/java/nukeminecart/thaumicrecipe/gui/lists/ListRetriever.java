@@ -15,6 +15,7 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import nukeminecart.thaumicrecipe.recipes.file.Recipe;
 import nukeminecart.thaumicrecipe.recipes.file.RecipeParser;
+import org.apache.commons.lang3.StringUtils;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.ThaumcraftApiHelper;
 import thaumcraft.api.aspects.Aspect;
@@ -32,7 +33,7 @@ import java.util.*;
 import static nukeminecart.thaumicrecipe.ThaumicRecipeConstants.MOD_ID;
 
 public class ListRetriever {
-    public static HashMap<String, Item> itemList = new HashMap<>();
+    public static HashMap<String, Ingredient> itemList = new HashMap<>();
     public static HashMap<String, ResearchEntry> researchList = new HashMap<>();
     public static HashMap<String, Aspect> aspectList = new HashMap<>();
     public static HashMap<String, Object> irecipeList = new HashMap<>();
@@ -53,9 +54,9 @@ public class ListRetriever {
      * Get all of the {@link Item} and {@link Block} from {@link ForgeRegistries}
      */
     private static void getItemList() {
-        for (Item item : ForgeRegistries.ITEMS) {
-            itemList.put(Objects.requireNonNull(item.getRegistryName()).toString(), item);
-        }
+        for (Item item : ForgeRegistries.ITEMS)
+            for(ItemStack matchingStack : ThaumcraftApiHelper.getIngredient(item).getMatchingStacks())
+                itemList.put(matchingStack.getDisplayName(),ThaumcraftApiHelper.getIngredient(matchingStack));
     }
 
     /**
@@ -78,6 +79,7 @@ public class ListRetriever {
      */
     private static void getAspectList() {
         aspectList = Aspect.aspects;
+        aspectList.forEach((s, aspect) -> StringUtils.capitalize(s));
     }
 
     /**
@@ -349,7 +351,7 @@ public class ListRetriever {
      * @return the {@link String} of the {@link ItemStack}
      */
     private static String getNameFromItemStack(ItemStack item) {
-        return Objects.requireNonNull(item.getItem().getRegistryName()).getResourcePath();
+        return item.getDisplayName();
     }
 
     /**
@@ -361,8 +363,8 @@ public class ListRetriever {
     private static HashMap<String, Integer> compileIngredients(List<Ingredient> ingredients) {
         HashMap<String, Integer> ingredientsMap = new HashMap<>();
         for (Ingredient ingredient : ingredients) {
-            if (ingredient.getMatchingStacks().length > 0) {
-                String key = getNameFromItemStack(ingredient.getMatchingStacks()[0]);
+            for(ItemStack matchingStack : ingredient.getMatchingStacks()){
+                String key = getNameFromItemStack(matchingStack);
                 if (ingredientsMap.containsKey(key)) ingredientsMap.put(key, ingredientsMap.get(key) + 1);
                 else ingredientsMap.put(key, 1);
             }

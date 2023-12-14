@@ -23,7 +23,7 @@ public class RecipeParser {
 
         for (Ingredient ingredient : shapedPrimer.input) {
             if (ingredient.getMatchingStacks().length > 0) {
-                ingredientMap.put(ingredient, ingredient.getMatchingStacks()[0] + stringArraySeparator);
+                ingredientMap.put(ingredient, ingredient.getMatchingStacks()[0].getDisplayName() + stringArraySeparator);
                 reverseIngredientMap.put(ingredient.getMatchingStacks()[0].getDisplayName(), ingredient);
             }
         }
@@ -57,9 +57,13 @@ public class RecipeParser {
         return recipeComponents.toArray();
     }
 
+    /**
+     * Convert the {@link CraftingHelper.ShapedPrimer} forge format to my {@link Recipe} format
+     * @param objectShape the {@link CraftingHelper.ShapedPrimer} format
+     * @return the {@link Recipe} format
+     */
     public static String[] convertShapedToRecipe(Object... objectShape) {
         StringBuilder builder = new StringBuilder();
-        //TODO REMOVE NULL VALUES
         for (int i = 0; i < objectShape.length; i++) {
             if (objectShape[i + 1].toString().toLowerCase().contains("ingredient")) {
                 break;

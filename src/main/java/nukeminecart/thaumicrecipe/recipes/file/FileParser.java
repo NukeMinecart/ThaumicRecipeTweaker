@@ -14,7 +14,6 @@ import static nukeminecart.thaumicrecipe.ThaumicRecipeConstants.*;
  */
 public class FileParser {
 
-    //TODO CHANGE THIS TO CHECK IF THE FILES NEED TO BE UPDATED -> ADD ALL the MODID STRINGS AT THE BEGINNING
 
     /**
      * Reads {@link File} and returns the lines as a list of strings
@@ -156,5 +155,17 @@ public class FileParser {
             compressedRecipes.add(compressRecipe(recipe));
         }
         saveToFile(saveLocation, compressedRecipes, true);
+    }
+
+    /**
+     * Load the config options from the thaumicrecipetweakerGUI config file
+     * @return the config options in a {@link Boolean} array
+     */
+    public static HashMap<String, String> loadConfigOptions() throws IOException {
+        List<String> contents = readFile(new File(recipeDirectory,"recipe.cfg"));
+        HashMap<String, String> returnMap = new HashMap<>();
+        for(String item: contents)
+            returnMap.put(item.split(mapSeparator)[0],item.split(mapSeparator)[1]);
+        return returnMap;
     }
 }

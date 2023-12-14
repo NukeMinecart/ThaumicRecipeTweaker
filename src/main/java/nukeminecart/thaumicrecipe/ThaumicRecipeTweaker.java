@@ -31,12 +31,12 @@ public class ThaumicRecipeTweaker {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        //TODO FIX THE CONFIG
-//        if (Config.shouldGUIOpen) {
+        if (Config.shouldGUIOpen) {
             URL directoryURL = DirectoryLocator.getLocation(ThaumicRecipeTweaker.class);
             String directory = DirectoryLocator.urlToFile(directoryURL).getPath().replace("ThaumicRecipeTweaker-" + VERSION + ".jar", "");
             new JarExecutor().executeJar((directory + ThaumicRecipeTweaker.GUIID + ".jar"), minecraftDirectory.getPath(), Config.loadedRecipeFile);
-//        }
+        }
+        Config.updateConfig();
     }
 
     /**

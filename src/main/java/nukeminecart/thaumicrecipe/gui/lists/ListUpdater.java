@@ -1,5 +1,6 @@
 package nukeminecart.thaumicrecipe.gui.lists;
 
+import nukeminecart.thaumicrecipe.Config;
 import nukeminecart.thaumicrecipe.recipes.file.FileParser;
 
 import java.io.File;
@@ -20,11 +21,13 @@ public class ListUpdater {
      */
     public static void updateListFiles() throws IOException {
         getListsFromRegistries();
-        createListFiles();
-        FileParser.saveRecipesToFile(recipesFile, recipeList);
-        FileParser.saveToFile(ingredientsFile, itemList.keySet(), false);
-        FileParser.saveToFile(aspectsFile, aspectList.keySet(), false);
-        FileParser.saveToFile(researchFile, researchList.keySet(), false);
+        if(Config.shouldGUIOpen) {
+            createListFiles();
+            FileParser.saveRecipesToFile(recipesFile, recipeList);
+            FileParser.saveToFile(ingredientsFile, itemList.keySet(), false);
+            FileParser.saveToFile(aspectsFile, aspectList.keySet(), false);
+            FileParser.saveToFile(researchFile, researchList.keySet(), false);
+        }
     }
 
     /**

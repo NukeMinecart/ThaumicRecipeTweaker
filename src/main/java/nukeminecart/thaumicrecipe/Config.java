@@ -9,6 +9,10 @@ import nukeminecart.thaumicrecipe.recipes.file.FileParser;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
+
+import static nukeminecart.thaumicrecipe.ThaumicRecipeConstants.MOD_ID;
+import static nukeminecart.thaumicrecipe.ThaumicRecipeConstants.minecraftDirectory;
 
 @net.minecraftforge.common.config.Config(modid = ThaumicRecipeTweaker.MODID)
 public class Config {
@@ -20,6 +24,40 @@ public class Config {
     @net.minecraftforge.common.config.Config.Comment({"Set this to true to have the Thaumic Recipe Tweaker GUI open or false to force the GUI to not open \n requires ThaumicRecipeTweakerGUI.jar to be installed (placed in the mods folder)"})
     @net.minecraftforge.common.config.Config.RequiresMcRestart()
     public static Boolean shouldGUIOpen = true;
+
+    /**
+     * Updates the configuration {@link File} with values from the thaumicrecipetweakerGUI configuration {@link File}
+     */
+    public static void updateConfig() {
+        HashMap<String, String> configuration;
+        try {
+            configuration = FileParser.loadConfigOptions();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        for (String key : configuration.keySet()) {
+            if (key.equals("open-gui")) shouldGUIOpen = Boolean.valueOf(configuration.get(key));
+            if (key.equals("active-recipe")) loadedRecipeFile = configuration.get(key);
+        }
+        List<String> contents;
+        File configFile = new File(minecraftDirectory, MOD_ID + ".cfg");
+        try {
+            contents = FileParser.readFile(configFile);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        for (int i = 0; i < contents.size(); i++) {
+            String content = contents.get(i);
+            if (content.contains("shouldGUIOpen")) content = content.split("=")[0] + "=" + shouldGUIOpen;
+            if (content.contains("loadedRecipeFile")) content = content.split("=")[0] + "=" + loadedRecipeFile;
+            contents.set(i, content);
+        }
+        try {
+            FileParser.saveToFile(configFile, contents, true);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Mod.EventBusSubscriber(modid = ThaumicRecipeTweaker.MODID)
     private static class EventHandler {
@@ -35,28 +73,6 @@ public class Config {
                 ConfigManager.sync(ThaumicRecipeTweaker.MODID, net.minecraftforge.common.config.Config.Type.INSTANCE);
             }
         }
-    }
-
-    /**
-     * Updates the configuration {@link File} with values from the thaumicrecipetweakerGUI configuration {@link File}
-     */
-    public static void updateConfig(){
-        HashMap<String, String> configuration;
-        try {
-            configuration = FileParser.loadConfigOptions();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        String temp = "";
-        for (String key : configuration.keySet()){
-            if(key.equals("open-gui")) shouldGUIOpen = Boolean.valueOf(configuration.get(key));
-            if(key.equals("active-recipe")) loadedRecipeFile = configuration.get(key);
-            temp = shouldGUIOpen+loadedRecipeFile;
-        }
-        //TODO FIX CONFIGURATION FILE NOT SAVING IN THE SYNC METHOD -> SAVE MANUALLY PROB
-        ConfigManager.sync(ThaumicRecipeTweaker.MODID, net.minecraftforge.common.config.Config.Type.INSTANCE);
-        throw new NullPointerException(temp+shouldGUIOpen+loadedRecipeFile+configuration);
-
     }
 }
 

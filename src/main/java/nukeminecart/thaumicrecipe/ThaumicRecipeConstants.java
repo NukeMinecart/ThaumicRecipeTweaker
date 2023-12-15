@@ -1,6 +1,5 @@
 package nukeminecart.thaumicrecipe;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.item.crafting.Ingredient;
 
 import java.io.File;
@@ -13,10 +12,14 @@ public class ThaumicRecipeConstants {
 
 
     public static void initConstants() {
-        minecraftDirectory = Minecraft.getMinecraft().mcDataDir;
         MOD_ID = "thaumicrecipe";
         separator = System.getProperty("file.separator");
-        recipeDirectory = new File(minecraftDirectory + separator + MOD_ID + separator);
+        recipeDirectory = new File(minecraftDirectory + separator + MOD_ID);
+        try {
+            if (recipeDirectory.mkdir()) System.out.println(MOD_ID + " Directory successfully created");
+        } catch (SecurityException e) {
+            throw new RuntimeException(e);
+        }
         stringSeparator = "-=-";
         stringArraySeparator = "-";
         mapSeparator = ":";

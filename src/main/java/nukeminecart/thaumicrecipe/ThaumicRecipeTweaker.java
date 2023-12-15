@@ -7,11 +7,13 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import nukeminecart.thaumicrecipe.gui.launcher.DirectoryLocator;
 import nukeminecart.thaumicrecipe.gui.launcher.JarExecutor;
 import nukeminecart.thaumicrecipe.gui.lists.ListUpdater;
+import nukeminecart.thaumicrecipe.recipes.file.RecipeParser;
 
 import java.io.IOException;
 import java.net.URL;
 
 import static nukeminecart.thaumicrecipe.ThaumicRecipeConstants.minecraftDirectory;
+import static nukeminecart.thaumicrecipe.ThaumicRecipeConstants.recipeDirectory;
 
 @Mod(modid = ThaumicRecipeTweaker.MODID, useMetadata = true)
 public class ThaumicRecipeTweaker {
@@ -29,7 +31,7 @@ public class ThaumicRecipeTweaker {
         try {
             ListUpdater.updateListFiles();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e + "-> Minecraft Directory:" + minecraftDirectory + " -> Recipe Directory:" + recipeDirectory);
         }
         if (Config.shouldGUIOpen) {
             URL directoryURL = DirectoryLocator.getLocation(ThaumicRecipeTweaker.class);
@@ -37,6 +39,11 @@ public class ThaumicRecipeTweaker {
             new JarExecutor().executeJar((directory + ThaumicRecipeTweaker.GUIID + ".jar"), minecraftDirectory.getPath(), Config.loadedRecipeFile);
         }
         Config.updateConfig();
+        try {
+            RecipeParser.loadRecipeToRegistries();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -46,6 +53,7 @@ public class ThaumicRecipeTweaker {
      */
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
+        minecraftDirectory = event.getModConfigurationDirectory();
         ThaumicRecipeConstants.initConstants();
     }
 }

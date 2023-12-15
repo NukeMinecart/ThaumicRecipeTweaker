@@ -35,6 +35,26 @@ public class FileParser {
     }
 
     /**
+     * Split a {@link String} according to the splitString
+     *
+     * @param string      the {@link String to split}
+     * @param splitString the {@link String} to split with
+     * @return a {@link String} array
+     */
+    public static String[] splitString(String string, String splitString) {
+        List<String> strings = new ArrayList<>();
+        for (String endString = string; string.contains(splitString); ) {
+            if (endString.contains(splitString)) strings.add(endString.substring(0, endString.indexOf(splitString)));
+            else {
+                strings.add(endString);
+                break;
+            }
+            endString = endString.substring(endString.indexOf(splitString) + splitString.length());
+        }
+        return strings.toArray(new String[0]);
+    }
+
+    /**
      * Takes a recipe and compresses it into a single line
      * to be saved in a file
      *
@@ -74,7 +94,7 @@ public class FileParser {
      * @throws ArrayIndexOutOfBoundsException if the line is missing necessary recipe information
      */
     public static Recipe parseRecipe(String line) {
-        String[] compressedRecipe = line.split(stringSeparator);
+        String[] compressedRecipe = splitString(line, stringSeparator);
         String name = null;
         String type = null;
         String research = null;
@@ -126,15 +146,15 @@ public class FileParser {
      *
      * @param savefile the file to save to
      * @param contents the contents of the file
-     * @param recipe if the saving is a recipe
+     * @param original if the saving is a needs to stay as it is
      * @throws IOException if the file cannot be written to, doesn't exist, and if an i/o error occurs
      */
-    public static void saveToFile(File savefile, Collection<String> contents, boolean recipe) throws IOException {
+    public static void saveToFile(File savefile, Collection<String> contents, boolean original) throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter(savefile));
         for (int i = 0; i < contents.size(); i++) {
             String line = contents.toArray(new String[0])[i];
-            if(!recipe)
-                line = line.replace(mapSeparator," ").replace(stringSeparator, " ").replace(stringArraySeparator, " ");
+            if (!original)
+                line = line.replace(mapSeparator, " ").replace(stringSeparator, " ").replace(stringArraySeparator, " ");
             writer.write(line);
             writer.newLine();
         }
@@ -159,13 +179,14 @@ public class FileParser {
 
     /**
      * Load the config options from the thaumicrecipetweakerGUI config file
+     *
      * @return the config options in a {@link Boolean} array
      */
     public static HashMap<String, String> loadConfigOptions() throws IOException {
-        List<String> contents = readFile(new File(recipeDirectory,"recipe.cfg"));
+        List<String> contents = readFile(new File(recipeDirectory, "recipe.cfg"));
         HashMap<String, String> returnMap = new HashMap<>();
-        for(String item: contents)
-            returnMap.put(item.split(mapSeparator)[0],item.split(mapSeparator)[1]);
+        for (String item : contents)
+            returnMap.put(item.split(mapSeparator)[0], item.split(mapSeparator)[1]);
         return returnMap;
     }
 }

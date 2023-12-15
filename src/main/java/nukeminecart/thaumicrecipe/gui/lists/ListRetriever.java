@@ -7,9 +7,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
@@ -55,8 +53,8 @@ public class ListRetriever {
      */
     private static void getItemList() {
         for (Item item : ForgeRegistries.ITEMS)
-            for(ItemStack matchingStack : ThaumcraftApiHelper.getIngredient(item).getMatchingStacks())
-                itemList.put(matchingStack.getDisplayName(),ThaumcraftApiHelper.getIngredient(matchingStack));
+            for (ItemStack matchingStack : ThaumcraftApiHelper.getIngredient(item).getMatchingStacks())
+                itemList.put(matchingStack.getDisplayName(), ThaumcraftApiHelper.getIngredient(matchingStack));
     }
 
     /**
@@ -99,7 +97,6 @@ public class ListRetriever {
      * Parses all the {@link IRecipe} into {@link Recipe}
      */
     private static void parseIRecipes() {
-        //TODO CHANGE THE GET INGREDIENTS TO GET THE CORRECT ONES
         for (Object irecipe : irecipeList.values()) {
             String type;
             if (irecipe instanceof ShapedArcaneRecipe) type = "ShapedArcane";
@@ -140,7 +137,7 @@ public class ListRetriever {
                     returnRecipe = convertShapelessOre((ShapelessOreRecipe) irecipe);
                     break;
             }
-            if(returnRecipe != null)
+            if (returnRecipe != null)
                 recipeList.put(returnRecipe.getName(), returnRecipe);
         }
     }
@@ -160,7 +157,7 @@ public class ListRetriever {
         HashMap<String, Integer> ingredients = compileIngredients(recipe.getIngredients());
         String output = getNameFromItemStack(recipe.getRecipeOutput());
 
-        String[] shape = compileShape(recipe.getRecipeHeight(), recipe.getRecipeWidth(), recipe.getIngredients());
+        String[] shape = RecipeParser.convertShapedToRecipe(RecipeParser.compileShape(recipe.getRecipeHeight(), recipe.getRecipeWidth(), recipe.getIngredients()));
 
         HashMap<String, Integer> aspects = compileAspects(recipe.getCrystals());
 
@@ -219,21 +216,22 @@ public class ListRetriever {
         String type = "infusion";
         String research = recipe.getResearch();
         String input = null;
-        if (recipe.getRecipeInput().getMatchingStacks().length > 0) input = recipe.getRecipeInput().getMatchingStacks()[0].isEmpty() ? null : getNameFromItemStack(ThaumcraftApiHelper.getIngredient(recipe.getRecipeInput()).getMatchingStacks()[0]);
+        if (recipe.getRecipeInput().getMatchingStacks().length > 0)
+            input = recipe.getRecipeInput().getMatchingStacks()[0].isEmpty() ? null : getNameFromItemStack(ThaumcraftApiHelper.getIngredient(recipe.getRecipeInput()).getMatchingStacks()[0]);
         HashMap<String, Integer> ingredients = compileIngredients(recipe.getComponents());
         Ingredient outputTest = ThaumcraftApiHelper.getIngredient(recipe.getRecipeOutput());
         String output;
         String name;
         String modid;
         if (outputTest != null) {
-            if(outputTest.getMatchingStacks().length > 0) {
+            if (outputTest.getMatchingStacks().length > 0) {
                 output = getNameFromItemStack(outputTest.getMatchingStacks()[0]);
                 name = outputTest.getMatchingStacks()[0].getDisplayName();
                 modid = getModid(outputTest.getMatchingStacks()[0]);
-            }else{
+            } else {
                 return null;
             }
-        }else{
+        } else {
             output = null;
             name = ingredients.keySet().toArray(new String[0])[0];
             modid = MOD_ID;
@@ -258,7 +256,7 @@ public class ListRetriever {
         HashMap<String, Integer> ingredients = compileIngredients(recipe.getIngredients());
         String output = getNameFromItemStack(recipe.getRecipeOutput());
 
-        String[] shape = compileShape(recipe.getRecipeHeight(), recipe.getRecipeWidth(), recipe.getIngredients());
+        String[] shape = RecipeParser.convertShapedToRecipe(RecipeParser.compileShape(recipe.getRecipeHeight(), recipe.getRecipeWidth(), recipe.getIngredients()));
 
         HashMap<String, Integer> aspects = new HashMap<>();
         int vis = 0;
@@ -299,7 +297,7 @@ public class ListRetriever {
         String input = "";
         HashMap<String, Integer> ingredients = compileIngredients(recipe.getIngredients());
         String output = recipe.getRecipeOutput().getDisplayName();
-        String[] shape = compileShape(recipe.getRecipeHeight(), recipe.getRecipeWidth(), recipe.getIngredients());
+        String[] shape = RecipeParser.convertShapedToRecipe(RecipeParser.compileShape(recipe.getRecipeHeight(), recipe.getRecipeWidth(), recipe.getIngredients()));
 
         HashMap<String, Integer> aspects = new HashMap<>();
         int vis = 0;
@@ -363,7 +361,7 @@ public class ListRetriever {
     private static HashMap<String, Integer> compileIngredients(List<Ingredient> ingredients) {
         HashMap<String, Integer> ingredientsMap = new HashMap<>();
         for (Ingredient ingredient : ingredients) {
-            for(ItemStack matchingStack : ingredient.getMatchingStacks()){
+            for (ItemStack matchingStack : ingredient.getMatchingStacks()) {
                 String key = getNameFromItemStack(matchingStack);
                 if (ingredientsMap.containsKey(key)) ingredientsMap.put(key, ingredientsMap.get(key) + 1);
                 else ingredientsMap.put(key, 1);
@@ -372,26 +370,11 @@ public class ListRetriever {
         return ingredientsMap;
     }
 
-    /**
-     * Compile the shape of a recipe
-     *
-     * @param height the height of the recipe
-     * @param width  the width of the recipe
-     * @param input  the ingredients of the recipe
-     * @return the compiled shape as a {@link String} array
-     */
 
-    private static String[] compileShape(int height, int width, NonNullList<Ingredient> input) {
-        CraftingHelper.ShapedPrimer shapedPrimer = new CraftingHelper.ShapedPrimer();
-        shapedPrimer.height = height;
-        shapedPrimer.width = width;
-        shapedPrimer.input = input;
-        Object[] shape = RecipeParser.unparseShaped(shapedPrimer);
-        return RecipeParser.convertShapedToRecipe(shape);
-    }
 
     /**
      * Compile the aspects of a {@link Recipe}
+     *
      * @param aspects the {@link AspectList} to compile
      * @return a {@link HashMap} containing the aspects and amounts
      */

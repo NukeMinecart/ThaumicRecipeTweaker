@@ -6,6 +6,7 @@ import nukeminecart.thaumicrecipe.recipes.file.FileParser;
 import java.io.File;
 import java.io.IOException;
 
+import static nukeminecart.thaumicrecipe.ThaumicRecipeConstants.MOD_ID;
 import static nukeminecart.thaumicrecipe.ThaumicRecipeConstants.recipeDirectory;
 import static nukeminecart.thaumicrecipe.gui.lists.ListRetriever.*;
 
@@ -20,9 +21,9 @@ public class ListUpdater {
      * Update all the lst {@link File} in the thaumicrecioe directory
      */
     public static void updateListFiles() throws IOException {
+        createListFiles();
         getListsFromRegistries();
-        if(Config.shouldGUIOpen) {
-            createListFiles();
+        if (Config.shouldGUIOpen) {
             FileParser.saveRecipesToFile(recipesFile, recipeList);
             FileParser.saveToFile(ingredientsFile, itemList.keySet(), false);
             FileParser.saveToFile(aspectsFile, aspectList.keySet(), false);
@@ -35,20 +36,16 @@ public class ListUpdater {
      */
     private static void createListFiles() throws IOException {
         ingredientsFile = new File(recipeDirectory, "ingredients.lst");
-        if (!ingredientsFile.exists())
-            if (!ingredientsFile.createNewFile()) throw new NullPointerException("Error Creating Ingredients File");
+        if (ingredientsFile.createNewFile()) System.out.println(MOD_ID + ": Ingredients File Created Successfully");
 
         aspectsFile = new File(recipeDirectory, "aspects.lst");
-        if (!aspectsFile.exists())
-            if (!aspectsFile.createNewFile()) throw new NullPointerException("Error Creating Aspect File");
+        if (!aspectsFile.createNewFile()) System.out.println(MOD_ID + ": Aspects File Created Successfully");
 
         researchFile = new File(recipeDirectory, "research.lst");
-        if (!researchFile.exists())
-            if (!researchFile.createNewFile()) throw new NullPointerException("Error Creating Research File");
+        if (!researchFile.createNewFile()) System.out.println(MOD_ID + ": Research File Created Successfully");
 
         recipesFile = new File(recipeDirectory, "recipes.lst");
-        if (!recipesFile.exists())
-            if (!recipesFile.createNewFile()) throw new NullPointerException("Error Creating Recipes File");
+        if (!recipesFile.createNewFile()) System.out.println(MOD_ID + ": Recipes File Created Successfully");
 
     }
 }

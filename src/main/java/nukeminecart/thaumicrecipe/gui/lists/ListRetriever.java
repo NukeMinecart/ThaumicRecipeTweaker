@@ -29,6 +29,7 @@ import thaumcraft.api.research.ResearchEntry;
 import java.util.*;
 
 import static nukeminecart.thaumicrecipe.ThaumicRecipeConstants.MOD_ID;
+import static nukeminecart.thaumicrecipe.ThaumicRecipeConstants.mapSeparator;
 
 public class ListRetriever {
     public static HashMap<String, Ingredient> itemList = new HashMap<>();
@@ -351,7 +352,7 @@ public class ListRetriever {
      * @return the {@link String} of the {@link ItemStack}
      */
     private static String getNameFromItemStack(ItemStack item) {
-        return item.getDisplayName();
+        return item.getDisplayName() + mapSeparator + item.getCount();
     }
 
     /**

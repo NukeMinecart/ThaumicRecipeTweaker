@@ -1,5 +1,6 @@
 package nukeminecart.thaumicrecipe.recipes.file;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -165,12 +166,14 @@ public class RecipeParser {
      */
     private static ShapedArcaneRecipe recipeToShapedArcane(Recipe recipe){
         Object[] shape = recipeToShape(recipe.getShape());
+        ItemStack output = itemList.get(recipe.getOutput().split(mapSeparator)[0]).getMatchingStacks()[0];
+        output.setCount(Integer.parseInt(recipe.getOutput().split(mapSeparator)[1]));
         return new ShapedArcaneRecipe(
                 new ResourceLocation(""),
                 researchList.get(recipe.getResearch()).getKey(),
                 recipe.getVis(),
                 compileAspects(recipe.getAspects()),
-                itemList.get(recipe.getOutput()).getMatchingStacks()[0].getItem(),
+                output,
                 shape
         );
     }
@@ -180,12 +183,14 @@ public class RecipeParser {
      * @return the {@link ShapelessArcaneRecipe}
      */
     private static ShapelessArcaneRecipe recipeToShapelessArcane(Recipe recipe){
+        ItemStack output = itemList.get(recipe.getOutput().split(mapSeparator)[0]).getMatchingStacks()[0];
+        output.setCount(Integer.parseInt(recipe.getOutput().split(mapSeparator)[1]));
         return new ShapelessArcaneRecipe(
                 new ResourceLocation(""),
                 researchList.get(recipe.getResearch()).getKey(),
                 recipe.getVis(),
                 compileAspects(recipe.getAspects()),
-                itemList.get(recipe.getOutput()).getMatchingStacks()[0].getItem(),
+                output,
                 compileIngredients(recipe.getIngredients()));
     }
     /**
@@ -194,9 +199,11 @@ public class RecipeParser {
      * @return the {@link ShapedOreRecipe}
      */
     private static ShapedOreRecipe recipeToShapedOre(Recipe recipe){
+        ItemStack output = itemList.get(recipe.getOutput().split(mapSeparator)[0]).getMatchingStacks()[0];
+        output.setCount(Integer.parseInt(recipe.getOutput().split(mapSeparator)[1]));
         return new ShapedOreRecipe(
                 new ResourceLocation(""),
-                itemList.get(recipe.getOutput()).getMatchingStacks()[0],
+                output,
                 recipeToShape(recipe.getShape()));
     }
     /**
@@ -205,9 +212,11 @@ public class RecipeParser {
      * @return the {@link ShapelessOreRecipe}
      */
     private static ShapelessOreRecipe recipeToShapelessOre(Recipe recipe){
+        ItemStack output = itemList.get(recipe.getOutput().split(mapSeparator)[0]).getMatchingStacks()[0];
+        output.setCount(Integer.parseInt(recipe.getOutput().split(mapSeparator)[1]));
         return new ShapelessOreRecipe(
                 new ResourceLocation(""),
-                itemList.get(recipe.getOutput()).getMatchingStacks()[0],
+                output,
                 compileIngredients(recipe.getIngredients()));
     }
     /**
@@ -216,10 +225,14 @@ public class RecipeParser {
      * @return the {@link CrucibleRecipe}
      */
     private static CrucibleRecipe recipeToCrucible(Recipe recipe){
+        ItemStack output = itemList.get(recipe.getOutput().split(mapSeparator)[0]).getMatchingStacks()[0];
+        output.setCount(Integer.parseInt(recipe.getOutput().split(mapSeparator)[1]));
+        ItemStack input = itemList.get(recipe.getInput().split(mapSeparator)[0]).getMatchingStacks()[0];
+        input.setCount(Integer.parseInt(recipe.getInput().split(mapSeparator)[1]));
         return new CrucibleRecipe(
                 researchList.get(recipe.getResearch()).getKey(),
-                itemList.get(recipe.getOutput()).getMatchingStacks()[0],
-                itemList.get(recipe.getInput()).getMatchingStacks()[0],
+                output,
+                input,
                 compileAspects(recipe.getAspects()));
     }
     /**
@@ -228,11 +241,16 @@ public class RecipeParser {
      * @return the {@link InfusionRecipe}
      */
     private static InfusionRecipe recipeToInfusion(Recipe recipe){
+        ItemStack output = itemList.get(recipe.getOutput().split(mapSeparator)[0]).getMatchingStacks()[0];
+        output.setCount(Integer.parseInt(recipe.getOutput().split(mapSeparator)[1]));
+        ItemStack input = itemList.get(recipe.getInput().split(mapSeparator)[0]).getMatchingStacks()[0];
+        input.setCount(Integer.parseInt(recipe.getInput().split(mapSeparator)[1]));
         return new InfusionRecipe(
                 researchList.get(recipe.getResearch()).getKey(),
-                itemList.get(recipe.getOutput()),
+                output,
                 recipe.getVis(),
                 compileAspects(recipe.getAspects()),
+                input,
                 compileIngredients(recipe.getIngredients()));
     }
 

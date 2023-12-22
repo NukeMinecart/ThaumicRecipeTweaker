@@ -110,12 +110,12 @@ public class FileParser {
             type = compressedRecipe[1];
             research = compressedRecipe[2];
             modid = compressedRecipe[3];
-            input = compressedRecipe[4];
+            input = compressedRecipe[4].replace("x",mapSeparator);
             ingredients = new HashMap<>();
             for (String ingredient : compressedRecipe[5].split(stringArraySeparator)) {
                 ingredients.put(ingredient.split(mapSeparator)[0], Integer.parseInt(ingredient.split(mapSeparator)[1]));
             }
-            output = compressedRecipe[6];
+            output = compressedRecipe[6].replace("x",mapSeparator);
             vis = Integer.parseInt(compressedRecipe[7]);
             aspects = new HashMap<>();
             for (String aspect : compressedRecipe[8].split(stringArraySeparator)) {
@@ -124,6 +124,7 @@ public class FileParser {
             shape = compressedRecipe[9].split(stringArraySeparator);
         } catch (ArrayIndexOutOfBoundsException ignored) {
         }
+
         return new Recipe(name, type, research, modid, input, ingredients, output, vis, aspects, shape);
     }
 

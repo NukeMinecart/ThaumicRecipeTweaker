@@ -36,6 +36,7 @@ public class ListRetriever {
     public static HashMap<String, Aspect> aspectList = new HashMap<>();
     public static HashMap<String, Object> irecipeList = new HashMap<>();
     public static HashMap<String, Recipe> recipeList = new HashMap<>();
+    private static final String displaySeparator = ";";
 
 
     /**
@@ -149,8 +150,8 @@ public class ListRetriever {
      * @return the {@link Recipe}
      */
     private static Recipe convertShapedArcane(ShapedArcaneRecipe recipe) {
-        String name = recipe.getRecipeOutput().getDisplayName();
         String type = "arcane";
+        String name = recipe.getRecipeOutput().getDisplayName() + displaySeparator + type;
         String research = recipe.getResearch();
         String modid = getModid(recipe.getRegistryName());
         String input = "";
@@ -172,8 +173,8 @@ public class ListRetriever {
      * @return the {@link Recipe}
      */
     private static Recipe convertShapelessArcane(ShapelessArcaneRecipe recipe) {
-        String name = recipe.getRecipeOutput().getDisplayName();
         String type = "arcane";
+        String name = recipe.getRecipeOutput().getDisplayName() + displaySeparator + type;
         String research = recipe.getResearch();
         String modid = getModid(recipe.getRegistryName());
         String input = "";
@@ -193,8 +194,8 @@ public class ListRetriever {
      * @return the {@link Recipe}
      */
     private static Recipe convertCrucible(CrucibleRecipe recipe) {
-        String name = recipe.getRecipeOutput().getDisplayName();
         String type = "crucible";
+        String name = recipe.getRecipeOutput().getDisplayName() + displaySeparator + type;
         String research = recipe.getResearch();
         String modid = Objects.requireNonNull(recipe.getRecipeOutput().getItem().getRegistryName()).getResourceDomain();
         String input = getNameFromItemStack(recipe.getCatalyst().getMatchingStacks()[0]);
@@ -237,6 +238,7 @@ public class ListRetriever {
             modid = MOD_ID;
         }
         HashMap<String, Integer> aspects = compileAspects(recipe.getAspects());
+        name += displaySeparator + type;
 
         return new Recipe(name, type, research, modid, input, ingredients, output, 0, aspects);
     }
@@ -248,8 +250,8 @@ public class ListRetriever {
      * @return the {@link Recipe}
      */
     private static Recipe convertShaped(ShapedRecipes recipe) {
-        String name = recipe.getRecipeOutput().getDisplayName();
         String type = "normal";
+        String name = recipe.getRecipeOutput().getDisplayName() + displaySeparator + type;
         String research = "";
         String modid = getModid(recipe.getRegistryName());
         String input = "";
@@ -270,8 +272,8 @@ public class ListRetriever {
      * @return hte {@link Recipe}
      */
     private static Recipe convertShapeless(ShapelessRecipes recipe) {
-        String name = recipe.getRecipeOutput().getDisplayName();
         String type = "normal";
+        String name = recipe.getRecipeOutput().getDisplayName() + displaySeparator + type;
         String research = "";
         String modid = getModid(recipe.getRegistryName());
         String input = "";
@@ -290,8 +292,8 @@ public class ListRetriever {
      * @return hte {@link Recipe}
      */
     private static Recipe convertShapedOre(ShapedOreRecipe recipe) {
-        String name = recipe.getRecipeOutput().getDisplayName();
         String type = "normal";
+        String name = recipe.getRecipeOutput().getDisplayName() + displaySeparator + type;
         String research = "";
         String modid = getModid(recipe.getRegistryName());
         String input = "";
@@ -311,8 +313,8 @@ public class ListRetriever {
      * @return hte {@link Recipe}
      */
     private static Recipe convertShapelessOre(ShapelessOreRecipe recipe) {
-        String name = recipe.getRecipeOutput().getDisplayName();
         String type = "normal";
+        String name = recipe.getRecipeOutput().getDisplayName() + displaySeparator + type;
         String research = "";
         String modid = getModid(recipe.getRegistryName());
         String input = "";

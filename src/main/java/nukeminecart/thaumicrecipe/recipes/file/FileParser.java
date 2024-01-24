@@ -67,24 +67,36 @@ public class FileParser {
         returnRecipe.append(recipe.getType()).append(stringSeparator);
         returnRecipe.append(recipe.getResearch()).append(stringSeparator);
         returnRecipe.append(recipe.getModid()).append(stringSeparator);
-        returnRecipe.append(recipe.getInput()).append(stringSeparator);
-
-        for (String ingredient : recipe.getIngredients().keySet()) {
-            returnRecipe.append(ingredient).append(mapSeparator).append(recipe.getIngredients().get(ingredient)).append(stringArraySeparator);
-        }
+        if (recipe.getInput() != null && !recipe.getInput().contains(" x"))
+            returnRecipe.append(recipe.getInput()).append(mapSeparator).append(1).append(stringSeparator);
+        else if (recipe.getInput() != null)
+            returnRecipe.append(recipe.getInput().replace(" x", mapSeparator)).append(stringSeparator);
+        else
+            returnRecipe.append(stringSeparator);
+        if (recipe.getIngredients() != null && !recipe.getIngredients().isEmpty())
+            for (String ingredient : recipe.getIngredients().keySet())
+                returnRecipe.append(ingredient).append(mapSeparator).append(recipe.getIngredients().get(ingredient)).append(stringArraySeparator);
         returnRecipe.append(stringSeparator);
-        returnRecipe.append(recipe.getOutput()).append(stringSeparator);
+        if (recipe.getOutput() != null && !recipe.getOutput().contains(" x"))
+            returnRecipe.append(recipe.getOutput()).append(mapSeparator).append(1).append(stringSeparator);
+        else if (recipe.getOutput() != null)
+            returnRecipe.append(recipe.getOutput().replace(" x", mapSeparator)).append(stringSeparator);
+        else
+            returnRecipe.append(stringSeparator);
 
         returnRecipe.append(recipe.getVis()).append(stringSeparator);
-        for (String aspect : recipe.getAspects().keySet()) {
-            returnRecipe.append(aspect).append(mapSeparator).append(recipe.getAspects().get(aspect)).append(stringArraySeparator);
-        }
+        if (recipe.getAspects() != null && !recipe.getAspects().isEmpty())
+            for (String aspect : recipe.getAspects().keySet())
+                returnRecipe.append(aspect).append(mapSeparator).append(recipe.getAspects().get(aspect)).append(stringArraySeparator);
+
         returnRecipe.append(stringSeparator);
-        for (Object shape : recipe.getShape()) {
+        if (recipe.getShape() != null) for (Object shape : recipe.getShape())
             returnRecipe.append(shape).append(stringArraySeparator);
-        }
+
+
         return returnRecipe.toString();
     }
+
 
     /**
      * Changes custom string recipe to a {@link Recipe}
@@ -104,29 +116,60 @@ public class FileParser {
         String output = null;
         int vis = 0;
         HashMap<String, Integer> aspects = new HashMap<>();
-        String[] shape = null;
+        List<String> shape = new ArrayList<>();
         try {
             name = compressedRecipe[0];
             type = compressedRecipe[1];
             research = compressedRecipe[2];
             modid = compressedRecipe[3];
-            input = compressedRecipe[4].replace("x",mapSeparator);
+            input = compressedRecipe[4];
             ingredients = new HashMap<>();
-            for (String ingredient : compressedRecipe[5].split(stringArraySeparator)) {
-                ingredients.put(ingredient.split(mapSeparator)[0], Integer.parseInt(ingredient.split(mapSeparator)[1]));
+            if (!compressedRecipe[5].isEmpty())
+                for (String ingredient : compressedRecipe[5].split(stringArraySeparator))
+                    ingredients.put(ingredient.split(mapSeparator)[0], Integer.parseInt(ingredient.split(mapSeparator)[1]));
+            output = compressedRecipe[6];
+            try {
+                vis = Integer.parseInt(compressedRecipe[7]);
+            } catch (NumberFormatException ignored) {
             }
-            output = compressedRecipe[6].replace("x",mapSeparator);
-            vis = Integer.parseInt(compressedRecipe[7]);
             aspects = new HashMap<>();
-            for (String aspect : compressedRecipe[8].split(stringArraySeparator)) {
-                aspects.put(aspect.split(mapSeparator)[0], Integer.parseInt(aspect.split(mapSeparator)[1]));
+            if (!compressedRecipe[8].isEmpty())
+                for (String aspect : compressedRecipe[8].split(stringArraySeparator))
+                    aspects.put(aspect.split(mapSeparator)[0], Integer.parseInt(aspect.split(mapSeparator)[1]));
+
+
+            for (String shapeElement : compressedRecipe[9].split(stringArraySeparator)) {
+                for (int i = 0; i < countOccurrences(shapeElement, "null"); i++)
+                    shape.add("");
+
+                shapeElement = shapeElement.replace("null", "");
+                shape.add(shapeElement);
             }
-            shape = compressedRecipe[9].split(stringArraySeparator);
-        } catch (ArrayIndexOutOfBoundsException ignored) {
+        } catch (ArrayIndexOutOfBoundsException ignored) {}
+        if (shape.toArray(new String[0]).length > 9)
+            shape.remove(9);
+        return new Recipe(name, type, research, modid, input, ingredients, output, vis, aspects, shape.toArray(new String[0]));
+    }
+
+    /**
+     * Returns the count of how many times a substring appears in the given string.
+     *
+     * @param str    The string to search in.
+     * @param subStr The substring to find in the string.
+     * @return The count of occurrences of the substring.
+     */
+    public static int countOccurrences(String str, String subStr) {
+        int count = 0;
+        int idx = 0;
+
+        while ((idx = str.indexOf(subStr, idx)) != -1) {
+            count++;
+            idx += subStr.length();
         }
 
-        return new Recipe(name, type, research, modid, input, ingredients, output, vis, aspects, shape);
+        return count;
     }
+
 
     /**
      * Returns all the recipes from a list of strings

@@ -159,7 +159,7 @@ public class ListRetriever {
         HashMap<String, Integer> ingredients = compileIngredients(recipe.getIngredients());
         String output = getNameFromItemStack(recipe.getRecipeOutput());
 
-        String[] shape = RecipeParser.convertShapedToRecipe(RecipeParser.compileShape(recipe.getRecipeHeight(), recipe.getRecipeWidth(), recipe.getIngredients()));
+        String[] shape = RecipeParser.convertShapedToRecipe(RecipeParser.convertShaped(recipe.getRecipeHeight(), recipe.getRecipeWidth(), recipe.getIngredients()));
 
         HashMap<String, Integer> aspects = compileAspects(recipe.getCrystals());
 
@@ -259,7 +259,7 @@ public class ListRetriever {
         HashMap<String, Integer> ingredients = compileIngredients(recipe.getIngredients());
         String output = getNameFromItemStack(recipe.getRecipeOutput());
 
-        String[] shape = RecipeParser.convertShapedToRecipe(RecipeParser.compileShape(recipe.getRecipeHeight(), recipe.getRecipeWidth(), recipe.getIngredients()));
+        String[] shape = RecipeParser.convertShapedToRecipe(RecipeParser.convertShaped(recipe.getRecipeHeight(), recipe.getRecipeWidth(), recipe.getIngredients()));
 
         HashMap<String, Integer> aspects = new HashMap<>();
         int vis = 0;
@@ -300,7 +300,7 @@ public class ListRetriever {
         String input = "";
         HashMap<String, Integer> ingredients = compileIngredients(recipe.getIngredients());
         String output = recipe.getRecipeOutput().getDisplayName();
-        String[] shape = RecipeParser.convertShapedToRecipe(RecipeParser.compileShape(recipe.getRecipeHeight(), recipe.getRecipeWidth(), recipe.getIngredients()));
+        String[] shape = RecipeParser.convertShapedToRecipe(RecipeParser.convertShaped(recipe.getRecipeHeight(), recipe.getRecipeWidth(), recipe.getIngredients()));
 
         HashMap<String, Integer> aspects = new HashMap<>();
         int vis = 0;

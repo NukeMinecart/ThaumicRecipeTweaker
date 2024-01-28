@@ -5,7 +5,7 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
-import nukeminecart.thaumicrecipe.recipes.file.RecipeParser;
+import nukeminecart.thaumicrecipe.recipes.api.ShapedWrapper;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.ThaumcraftApiHelper;
 import thaumcraft.api.crafting.*;
@@ -22,7 +22,6 @@ public class RecipeLoader {
     private static void sendIRecipe(IRecipe recipe) {
         if (recipe instanceof ShapedArcaneRecipe || recipe instanceof ShapelessArcaneRecipe)
             ThaumcraftApi.addArcaneCraftingRecipe(recipe.getRecipeOutput().getItem().getRegistryName(), (IArcaneRecipe) recipe);
-        if (recipe instanceof ShapedOreRecipe) sendShapedOreRecipe((ShapedOreRecipe) recipe);
         if (recipe instanceof ShapelessOreRecipe) sendShapelessOreRecipe((ShapelessOreRecipe) recipe);
     }
 
@@ -31,9 +30,8 @@ public class RecipeLoader {
      *
      * @param recipe the {@link ShapedOreRecipe} to send
      */
-    private static void sendShapedOreRecipe(ShapedOreRecipe recipe) {
-        Object[] shape = RecipeParser.compileShape(recipe.getRecipeHeight(), recipe.getRecipeWidth(), recipe.getIngredients());
-        GameRegistry.addShapedRecipe(recipe.getRecipeOutput().getItem().getRegistryName(), null, recipe.getRecipeOutput(), shape);
+    private static void sendShapedOreRecipe(ShapedWrapper recipe) {
+        GameRegistry.addShapedRecipe(recipe.getRecipe().getRecipeOutput().getItem().getRegistryName(), null, recipe.getRecipe().getRecipeOutput(), recipe.getShape());
     }
 
     /**
@@ -66,6 +64,7 @@ public class RecipeLoader {
         for (Object recipe : recipes.values()) {
             if (recipe instanceof IRecipe) sendIRecipe((IRecipe) recipe);
             if (recipe instanceof IThaumcraftRecipe) sendThaumcraftRecipe((IThaumcraftRecipe) recipe);
+            if (recipe instanceof ShapedWrapper) sendShapedOreRecipe((ShapedWrapper) recipe);
         }
     }
 }

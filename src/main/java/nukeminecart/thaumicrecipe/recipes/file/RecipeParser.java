@@ -8,6 +8,7 @@ import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import nukeminecart.thaumicrecipe.loader.RecipeLoader;
+import nukeminecart.thaumicrecipe.recipes.api.ShapedWrapper;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.crafting.CrucibleRecipe;
@@ -24,6 +25,8 @@ import static nukeminecart.thaumicrecipe.ThaumicRecipeConstants.*;
 import static nukeminecart.thaumicrecipe.gui.lists.ListRetriever.*;
 
 public class RecipeParser {
+    private static final HashMap<String, Character> keyMap = new HashMap<>();
+    private static char currentChar = 'a';
 
     /**
      * Unparse a {@link CraftingHelper.ShapedPrimer}
@@ -32,7 +35,7 @@ public class RecipeParser {
      * @return the {@link Object} containing the recipe
      */
 
-    public static Object[] unparseShaped(CraftingHelper.ShapedPrimer shapedPrimer) {
+    public static Object[] convertShaped(CraftingHelper.ShapedPrimer shapedPrimer) {
         List<Object> recipeComponents = new ArrayList<>();
         HashMap<Ingredient, String> ingredientMap = new HashMap<>();
 
@@ -68,7 +71,6 @@ public class RecipeParser {
             recipeComponents.add(entry.getValue());
             recipeComponents.add(entry.getKey());
         }
-
         return recipeComponents.toArray();
     }
 
@@ -102,15 +104,23 @@ public class RecipeParser {
      * @return Reconstructed Object array,
      */
     public static Object[] recipeToShape(String[] recipe) {
-        boolean small = recipe[2].isEmpty() && recipe[5].isEmpty() && recipe[6].isEmpty() && recipe[7].isEmpty() && recipe[8].isEmpty();
+
+        boolean small = isEmpty(recipe, 2) && isEmpty(recipe, 5) && isEmpty(recipe, 6) && isEmpty(recipe, 7) && isEmpty(recipe, 8);
         String[] constructedGroup = addValueGroups(recipe, small);
         Object[] constructedKeys = addKeyPairs(recipe);
-        // "x", "", "y", "x", "y", "z", "", "y", "z",  -> "1 2", "123", " 23", "1" = x, "2" = y, "3" = z
+
         List<Object> reconstructedShape = new ArrayList<>();
-        reconstructedShape.addAll(Arrays.asList(constructedGroup));
+        reconstructedShape.add(constructedGroup);
         reconstructedShape.addAll(Arrays.asList(constructedKeys));
 
         return reconstructedShape.toArray(new Object[0]);
+    }
+
+    /**
+     * Checks if an array index is empty (null or empty string)
+     */
+    public static boolean isEmpty(String[] array, int index){
+        return array.length <= index || array[index].isEmpty();
     }
 
     /**
@@ -124,33 +134,15 @@ public class RecipeParser {
         if(small){
             group.add(getStringArrayRange(shape, 0, 1));
             group.add(getStringArrayRange(shape, 3, 4));
-        }else
-            for (int i = 0; i < ceilToNearestMultiple(shape.length, 3); i++)
-                group.add(getStringArrayRange(shape, i * 3, i * 3 + 2));
+        }else{
+            group.add(getStringArrayRange(shape, 0, 2));
+            if(shape.length > 3)
+                group.add(getStringArrayRange(shape, 3, 5));
 
-
+            if(shape.length > 6)
+                group.add(getStringArrayRange(shape, 6, 8));
+        }
         return group.toArray(new String[0]);
-    }
-    /**
-     * Ceils a number to the nearest multiple of another number.
-     *
-     * @param number The number to be ceiled.
-     * @param multiple The base multiple to which the number is to be ceiled.
-     * @return The smallest number greater than or equal to 'number' that is a multiple of 'multiple'.
-     * @throws IllegalArgumentException If the multiple is zero, as it would lead to division by zero.
-     */
-    public static int ceilToNearestMultiple(int number, int multiple) {
-        if (multiple == 0) {
-            throw new IllegalArgumentException("Multiple cannot be zero.");
-        }
-
-        int remainder = number % multiple;
-        if (remainder == 0) {
-            return number; // number is already a multiple
-        }
-
-        // If number is negative, we subtract the remainder; otherwise, we add the difference
-        return number < 0 ? number - remainder : number + multiple - remainder;
     }
 
     /**
@@ -160,7 +152,11 @@ public class RecipeParser {
      */
     private static Object[] addKeyPairs(String[] shape){
         List<Object> returnList = new ArrayList<>();
+        List<String> uniqueList = new ArrayList<>();
         for(String item : shape){
+            if(item == null || uniqueList.contains(item) || item.isEmpty()) continue;
+            uniqueList.add(item);
+            returnList.add(keyMap.get(item));
             if(itemList.containsKey(item))
                 returnList.add(itemList.get(item));
             else
@@ -170,23 +166,33 @@ public class RecipeParser {
     }
 
     /**
-     * Gets the value at a string array's startIndex, returning an empty string if the element does not exist
+     * Gets the values in between a string array's startIndex and endIndex
      * @param array the array to get from
      * @param startIndex the start index of the array to start get values from
      * @param endIndex the ending index of the array to get values from
-     * @return either the values at the range in the array
+     * @return the values at the range in the array
      */
     private static String getStringArrayRange(String[] array, int startIndex, int endIndex){
-        StringBuilder value = new StringBuilder(array[startIndex]);
-        for(;startIndex <= endIndex; startIndex++){
-            value.append(getStringArrayValue(array, startIndex));
-        }
+        StringBuilder value = new StringBuilder();
+        for(;startIndex <= endIndex; startIndex++) value.append(getStringArrayValue(array, startIndex));
         return value.toString();
     }
-    private static String getStringArrayValue(String[] array, int index){
-        if(array.length <= index)
-            return " ";
-        else return array[index];
+
+    /**
+     * Get the value of the array at the index, returning an empty string if the element does not exist
+     * @param array the array to get from
+     * @param index the index to get from the array
+     * @return either a string with a space or the value of the array at the string
+     */
+    private static char getStringArrayValue(String[] array, int index){
+        if(array.length <= index || array[index] == null || array[index].isEmpty())
+            return ' ';
+        else if (!keyMap.containsKey(array[index])){
+            keyMap.put(array[index], currentChar);
+            return currentChar++;
+        }else
+            return keyMap.get(array[index]);
+
     }
 
     /**
@@ -198,12 +204,12 @@ public class RecipeParser {
      * @return the compiled shape as a {@link String} array
      */
 
-    public static Object[] compileShape(int height, int width, NonNullList<Ingredient> input) {
+    public static Object[] convertShaped(int height, int width, NonNullList<Ingredient> input) {
         CraftingHelper.ShapedPrimer shapedPrimer = new CraftingHelper.ShapedPrimer();
         shapedPrimer.height = height;
         shapedPrimer.width = width;
         shapedPrimer.input = input;
-        return RecipeParser.unparseShaped(shapedPrimer);
+        return RecipeParser.convertShaped(shapedPrimer);
     }
 
     /**
@@ -216,21 +222,21 @@ public class RecipeParser {
         if (recipes.length == 0) return;
         HashMap<String, Object> forgeRecipes = new HashMap<>();
         for (Recipe recipe : recipes) {
-            if (recipe.getType().equals("arcane") && recipe.getShape().length > 0)
-                forgeRecipes.put(recipe.getName(), recipeToShapedArcane(recipe));
-
-            if (recipe.getType().equals("arcane") && (recipe.getShape().length == 0 || recipe.getShape() == null))
+            if (recipe.getType().equals("arcane") && (recipe.getShape().length == 0 || recipe.getShape() == null || (recipe.getShape()[0].isEmpty() && recipe.getShape().length == 1)))
                 forgeRecipes.put(recipe.getName(), recipeToShapelessArcane(recipe));
 
-            if (recipe.getType().equals("normal") && recipe.getShape().length > 0)
-                forgeRecipes.put(recipe.getName(), recipeToShapedOre(recipe));
+            else if (recipe.getType().equals("arcane") && recipe.getShape().length > 0)
+                forgeRecipes.put(recipe.getName(), recipeToShapedArcane(recipe));
 
-            if (recipe.getType().equals("normal") && (recipe.getShape().length == 0 || recipe.getShape() == null))
+            else if (recipe.getType().equals("normal") && (recipe.getShape().length == 0 || recipe.getShape() == null || (recipe.getShape()[0].isEmpty() && recipe.getShape().length == 1)))
                 forgeRecipes.put(recipe.getName(), recipeToShapelessOre(recipe));
 
-            if (recipe.getType().equals("crucible")) forgeRecipes.put(recipe.getName(), recipeToCrucible(recipe));
+            else if (recipe.getType().equals("normal") && recipe.getShape().length > 0)
+                forgeRecipes.put(recipe.getName(), recipeToShapedOre(recipe));
 
-            if (recipe.getType().equals("infusion")) forgeRecipes.put(recipe.getName(), recipeToInfusion(recipe));
+            else if (recipe.getType().equals("crucible")) forgeRecipes.put(recipe.getName(), recipeToCrucible(recipe));
+
+            else if (recipe.getType().equals("infusion")) forgeRecipes.put(recipe.getName(), recipeToInfusion(recipe));
 
         }
         RecipeLoader.sendRecipesToRegistries(forgeRecipes);
@@ -267,10 +273,11 @@ public class RecipeParser {
      * @param recipe the {@link Recipe} to convert
      * @return the {@link ShapedOreRecipe}
      */
-    private static ShapedOreRecipe recipeToShapedOre(Recipe recipe) {
+    private static ShapedWrapper recipeToShapedOre(Recipe recipe) {
         ItemStack output = itemList.get(recipe.getOutput().split(mapSeparator)[0]).getMatchingStacks()[0];
         output.setCount(Integer.parseInt(recipe.getOutput().split(mapSeparator)[1]));
-        return new ShapedOreRecipe(new ResourceLocation(""), output, recipeToShape(recipe.getShape()));
+        Object[] shape = recipeToShape(recipe.getShape());
+        return new ShapedWrapper(new ShapedOreRecipe(new ResourceLocation(""), output, shape) ,shape);
     }
 
     /**
